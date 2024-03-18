@@ -22,33 +22,47 @@
                 <td>パスワードは変更する場合のみ入力してください</td>
                 </tr>
                 </table>
-                    <label class="form-label" for="code">社員番号</label>
-                    <p th:text="${employee.code}"></p>
-                        <label class="form-label" for="code">氏名</label>
-                        <p class="mb-1"></p>
-                        <div class="col-md-7">
-                        <input class="form-control" type="text" th:field="${employee.name}">
+                    <form th:action="@{/employees/{code}/update(code=${code})}"  th:method="post">
+                    <div class="wizard wizard-success mb-4">
+                        <div class="mb-3">
+                            <label class="form-label" for="code">社員番号</label>
+                            <p th:text="${employee.code}"></p>
+                            <p class="mb-1"></p>
                         </div>
-                            <div class="mb-3">
+                        <div class="mb-3">
+                            <label class="form-label" for="code">氏名</label>
+                            <p class="mb-1"></p>
+                            <div class="col-md-7">
+                                <input class="form-control" type="text" th:field="${employee.name}" th:errorclass="err" id="name">
+                                <span th:errors="${employee.name}" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label" for="password">パスワード</label>
                             <p class="mb-1"></p>
                             <div class="col-md-7">
-                            <input class="form-control" type="password" th:field="${employee.password}" th:errorclass="err" id="password">
-                            <span th:if="${passwordError} neq null" th:text="${passwordError}" class="text-danger"></span>
+                                <input class="form-control" type="password" th:field="${employee.password}" th:errorclass="err" id="password">
+                                <span th:if="${passwordError} neq null" th:text="${passwordError}" class="text-danger"></span>
                             </div>
-                            </div>
-                                <div class="mb-3">
-                                <label class="form-label" for="role">権限</label>
-                                <p class="mb-1"></p>
-                                <div class="col-md-4">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="role">権限</label>
+                            <p class="mb-1"></p>
+                            <div class="col-md-4">
                                 <select class="form-select" th:field="${employee.role}" id="role">
                                 <option th:each="item:${T(com.techacademy.entity.Employee.Role).values()}" th:value="${item}" th:text="${item.getValue()}" th:selected="*{role} == ${item}">
                                 </select>
-                                </div>
-                                </div>
-                                    <div class="col-auto">
-                                    <a th:href="@{/employees}" class="btn btn-primary">戻る</a>
-                                    </div>
+                            </div>
+                        </div>
+                        <div class="mt-5 row g-1">
+                            <div class="col-auto">
+                                <input type="submit" value="更新" class="btn btn-primary">
+                            </div>
+                            <div class="col-auto">
+                                <a th:href="@{/employees}" class="btn btn-primary">戻る</a>
+                            </div>
+                        </div>
+                    </div>
             </div>
             </div>
             </div>
