@@ -100,7 +100,7 @@ public class EmployeeController {
 
     //従業員更新画面
     @GetMapping(value = "/{code}/update")
-    public String edit(@PathVariable String code, Model model) {
+    public String edit(@PathVariable("code") String code, Model model) {
 
         model.addAttribute("employee", employeeService.findByCode(code));
 
@@ -110,44 +110,30 @@ public class EmployeeController {
     //従業員更新処理
     @PostMapping(value = "/{code}/update")
     public String update(@Validated Employee employee, BindingResult res, Model model) {
-
-        // パスワード空白チェック
-        /*
-         * エンティティ側の入力チェックでも実装は行えるが、更新の方でパスワードが空白でもチェックエラーを出さずに
-         * 更新出来る仕様となっているため上記を考慮した場合に別でエラーメッセージを出す方法が簡単だと判断
-         */
-        if ("".equals(employee.getPassword())) {
-            // パスワードが空白だった場合
-            model.addAttribute(ErrorMessage.getErrorName(ErrorKinds.BLANK_ERROR),
-                    ErrorMessage.getErrorValue(ErrorKinds.BLANK_ERROR));
-
-            return create(employee);
-
-        }
-
         // 入力チェック
         if (res.hasErrors()) {
-            return create(employee);
+            return edit(null, model);
         }
 
         // 論理削除を行った従業員番号を指定すると例外となるためtry~catchで対応
         // (findByIdでは削除フラグがTRUEのデータが取得出来ないため)
         try {
-            ErrorKinds result = employeeService.save(employee);
+            ErrorKinds result = employeeService.updateSave(employee);
 
             if (ErrorMessage.contains(result)) {
                 model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
-                return create(employee);
+                return edit(null, model);
             }
 
         } catch (DataIntegrityViolationException e) {
             model.addAttribute(ErrorMessage.getErrorName(ErrorKinds.DUPLICATE_EXCEPTION_ERROR),
                     ErrorMessage.getErrorValue(ErrorKinds.DUPLICATE_EXCEPTION_ERROR));
-            return create(employee);
+            return edit(null, model);
         }
 
         return "redirect:/employees";
     }
+
 
 
     // 従業員削除処理
