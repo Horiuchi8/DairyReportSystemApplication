@@ -100,9 +100,10 @@ public class EmployeeController {
 
     //従業員更新画面
     @GetMapping(value = "/{code}/update")
-    public String edit(@PathVariable("code") String code, Model model, Employee employee) {
+    public String edit(@PathVariable String code, Model model, Employee employee) {
+
         if(code != null) {
-        model.addAttribute("user", employeeService.findByCode(code));
+        model.addAttribute("employee", employeeService.findByCode(code));
         }
 
         return "employees/edit";
@@ -110,26 +111,19 @@ public class EmployeeController {
 
     //従業員更新処理
     @PostMapping(value = "/{code}/update")
-    public String update(@Validated Employee employee, BindingResult res, Model model) {
-
-        if ("".equals(employee.getPassword())) {
-            // パスワードが空白だった場合
-            model.addAttribute(ErrorMessage.getErrorName(ErrorKinds.BLANK_ERROR),
-                    ErrorMessage.getErrorValue(ErrorKinds.BLANK_ERROR));
-
-            return edit(null, model, employee);
-
-        }
-
-        // 入力チェック
-        if (res.hasErrors()) {
-            return edit(null, model, employee);
-        }
+    public String update(@PathVariable String code, Employee employee, BindingResult res, Model model) {
 
         ErrorKinds result = employeeService.updateSave(employee);
 
+        if (ErrorMessage.contains(result)) {
+            model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
+            return edit(null, model, employee);
+    }
+
         return "redirect:/employees";
     }
+
+
 
 
 
