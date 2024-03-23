@@ -54,7 +54,7 @@ public class Employee {
     private Role role;
 
     // パスワード
-    @Column(length = 255, nullable = false)
+    @Column(length = 255, nullable = true)
     private String password;
 
     // 削除フラグ(論理削除を行うため)
