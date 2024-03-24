@@ -55,20 +55,29 @@ public class EmployeeService {
     // 従業員更新保存
     @Transactional
     public ErrorKinds updateSave(Employee employee) {
+        //updateEmpにリポジトリ―にある検索した従業員の情報を全て格納
+        Employee updateEmp = employeeRepository.findById(employee.getCode()).get();
 
-        // パスワードチェック
-        ErrorKinds result = employeePasswordCheck(employee);
-        if (ErrorKinds.CHECK_OK != result) {
-            return result;
+        // パスワードが空白でないならパスワードチェック機能を行なう。
+        if (!"".equals(employee.getPassword())) {
+            //resultにupdateSaveに登録された従業員情報を格納してパスワードチェック
+            ErrorKinds result = employeePasswordCheck(employee);
+            //パスワードチェックに異常があれば結果を返す
+            if (ErrorKinds.CHECK_OK != result) {
+                return result;
+            }
+            updateEmp.setPassword(employee.getPassword());
         }
 
-        LocalDateTime now = LocalDateTime.now();
-        employee.setCreatedAt(now);
-        employee.setUpdatedAt(now);
+        updateEmp.setName(employee.getName());
 
-        employeeRepository.save(employee);
-        return ErrorKinds.SUCCESS;
-    }
+            LocalDateTime now = LocalDateTime.now();
+            updateEmp.setCreatedAt(now);
+            updateEmp.setUpdatedAt(now);
+
+            employeeRepository.save(updateEmp);
+            return ErrorKinds.SUCCESS;
+        }
 
     // 従業員削除
     @Transactional
