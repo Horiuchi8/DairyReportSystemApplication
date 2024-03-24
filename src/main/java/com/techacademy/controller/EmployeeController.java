@@ -111,15 +111,16 @@ public class EmployeeController {
 
     //従業員更新処理
     @PostMapping(value = "/{code}/update")
-    public String update(@PathVariable String code, Employee employee, BindingResult res, Model model) {
+    public String update(@PathVariable String code, @Validated Employee employee, BindingResult res, Model model) {
 
+        //サービスにあるupdateSaveでemployeeに登録される内容をresultに格納
         ErrorKinds result = employeeService.updateSave(employee);
-
+        //エラーが含まれるならエラーメッセージと共に従業員更新画面に戻る
         if (ErrorMessage.contains(result)) {
             model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
             return edit(null, model, employee);
     }
-
+        //更新ができたら一覧にリダイレクト
         return "redirect:/employees";
     }
 
