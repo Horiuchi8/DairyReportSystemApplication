@@ -74,8 +74,10 @@ public class EmployeeService {
             //初期値の名前はDB値をセットする
             updateEmp.setName(employee.getName());
 
+            //初期値の権限はDB値をセットする
+            updateEmp.setRole(employee.getRole());
+
             LocalDateTime now = LocalDateTime.now();
-            updateEmp.setCreatedAt(now);
             updateEmp.setUpdatedAt(now);
 
             //updateEmpの情報をDBに上書きする
