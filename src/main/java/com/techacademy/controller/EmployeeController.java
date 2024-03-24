@@ -113,13 +113,19 @@ public class EmployeeController {
     @PostMapping(value = "/{code}/update")
     public String update(@PathVariable String code, @Validated Employee employee, BindingResult res, Model model) {
 
-        //サービスにあるupdateSaveでemployeeに登録される内容をresultに格納
+        // 入力チェック(氏名側の入力チェック)
+        if (res.hasErrors()) {
+            return edit(null, model,employee);
+        }
+
+        //サービスにあるupdateSaveのemployeeに登録される内容をresultに格納
         ErrorKinds result = employeeService.updateSave(employee);
         //エラーが含まれるならエラーメッセージと共に従業員更新画面に戻る
         if (ErrorMessage.contains(result)) {
             model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
             return edit(null, model, employee);
     }
+
         //更新ができたら一覧にリダイレクト
         return "redirect:/employees";
     }
