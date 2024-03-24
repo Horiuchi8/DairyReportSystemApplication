@@ -58,6 +58,7 @@ public class EmployeeService {
         //updateEmpにリポジトリ―にある検索した従業員の情報を全て格納
         Employee updateEmp = employeeRepository.findById(employee.getCode()).get();
 
+
         // パスワードが空白でないならパスワードチェック機能を行なう。
         if (!"".equals(employee.getPassword())) {
             //resultにupdateSaveに登録された従業員情報を格納してパスワードチェック
@@ -66,15 +67,18 @@ public class EmployeeService {
             if (ErrorKinds.CHECK_OK != result) {
                 return result;
             }
+            //パスワードが空白ならばupdateEmpでセットされたパスワードを設定する(DB値を設定する)
             updateEmp.setPassword(employee.getPassword());
         }
 
-        updateEmp.setName(employee.getName());
+            //初期値の名前はDB値をセットする
+            updateEmp.setName(employee.getName());
 
             LocalDateTime now = LocalDateTime.now();
             updateEmp.setCreatedAt(now);
             updateEmp.setUpdatedAt(now);
 
+            //updateEmpの情報をDBに上書きする
             employeeRepository.save(updateEmp);
             return ErrorKinds.SUCCESS;
         }
