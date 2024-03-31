@@ -9,7 +9,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -19,20 +23,23 @@ import lombok.Data;
 @Entity
 @Table(name = "reports")
 @SQLRestriction("delete_flg = false")
-public class Reports {
+public class Report {
 
-    // ID
+//    @ManyToOne
+//    @JoinColumn(name = "employee_code", referencedColumnName = "code", nullable = false)
+//    private Employee employee;
+
+    /** 主キー。自動生成 */
     @Id
-    @Column
-    @NotEmpty
-    @Length
+    @NotNull
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     //日付
     @NotNull
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate reportDate;
+    private LocalDate report_date;
 
     //タイトル
     @Column(length = 100, nullable = false)
@@ -46,7 +53,6 @@ public class Reports {
     private String content;
 
     // 社員番号
-    @Id
     @Column(length = 10)
     @NotEmpty
     @Length(max = 10)
