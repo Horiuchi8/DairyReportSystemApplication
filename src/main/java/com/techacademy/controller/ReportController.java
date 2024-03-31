@@ -13,12 +13,12 @@ import com.techacademy.service.EmployeeService;
 
 @Controller
 @RequestMapping("reports")
-public class EmployeeReports {
+public class ReportController {
 
     private final EmployeeService employeeService;
 
     @Autowired
-    public EmployeeReports(EmployeeService employeeService) {
+    public ReportController(EmployeeService employeeService) {
         this.employeeService = employeeService;
     }
 
