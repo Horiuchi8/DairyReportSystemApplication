@@ -25,10 +25,6 @@ import lombok.Data;
 @SQLRestriction("delete_flg = false")
 public class Report {
 
-//    @ManyToOne
-//    @JoinColumn(name = "employee_code", referencedColumnName = "code", nullable = false)
-//    private Employee employee;
-
     /** 主キー。自動生成 */
     @Id
     @NotNull
@@ -52,12 +48,6 @@ public class Report {
     @NotEmpty
     private String content;
 
-    // 社員番号
-    @Column(length = 10)
-    @NotEmpty
-    @Length(max = 10)
-    private String employee_code;
-
     // 削除フラグ(論理削除を行う)
     @Column(columnDefinition="TINYINT", nullable = true)
     private boolean delete_flg;
@@ -69,5 +59,10 @@ public class Report {
     // 更新日時
     @Column(nullable = false)
     private LocalDateTime updated_at;
+
+    //Employeeエンティティにある社員番号(code)をForeignKeyのemployee_codeとして使う
+    @ManyToOne
+    @JoinColumn(name = "employee_code", referencedColumnName = "code", nullable = false)
+    private Employee employee;
 
 }
