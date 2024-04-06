@@ -35,7 +35,7 @@ public class Report {
     @NotNull
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate report_date;
+    private LocalDate reportDate;
 
     //タイトル
     @Column(length = 100, nullable = false)
@@ -60,6 +60,7 @@ public class Report {
     @Column(nullable = false)
     private LocalDateTime updated_at;
 
+    
     //Employeeエンティティにある社員番号(code)をForeignKeyのemployee_codeとして使う
     @ManyToOne
     @JoinColumn(name = "employee_code", referencedColumnName = "code", nullable = false)
