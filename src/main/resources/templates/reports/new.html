@@ -15,13 +15,53 @@
                 <h1 class="h3 mb-3">日報 新規登録</h1>
             </div>
             <div class="col-12 col-xxl-6">
-                            <p class="mt-5">
-                                <input type="submit" value="登録" class="btn btn-primary">
-                                <a th:href="@{/reports}" class="btn btn-primary">戻る</a>
-                            </p>
-            </div>
-        </div>
-    </div>
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form th:action="@{/reports/add}" th:method="post">
+                            <div class="wizard wizard-success mb-4">
+                                <div class="mb-3">
+                                    <label class="form-label" for="reportDate">日付</label>
+                                    <p class="mb-1"></p>
+                                    <div class="col-md-5">
+                                        <input class="form-control" type="date" th:field="${report.reportDate}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="name">氏名</label>
+                                    <br>
+                                    <p th:text="${username}"></p>
+                                    <input type="hidden" th:field="${employee}">
+                                    <p class="mb-1"></p>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="title">タイトル</label>
+                                    <p class="mb-1"></p>
+                                    <div class="col-md-7">
+                                        <input type="text" class="form-control" th:field="${report.title}">
+                                    </div>
+                                </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="content">内容</label>
+                                        <p class="mb-1"></p>
+                                        <div class="col-md-10">
+                                        <textarea class="form-control" rows="15" th:field="${report.content}"></textarea>
+                                        </div>
+
+                                        <p class="mt-5">
+                                            <input type="submit" value="登録" class="btn btn-primary">
+                                            <a th:href="@{/reports}" class="btn btn-primary">戻る</a>
+
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 </body>
 
 </html>
