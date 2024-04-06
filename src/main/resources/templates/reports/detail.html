@@ -14,24 +14,22 @@
                 <h1 class="h3 mb-3">日報 詳細</h1>
             </div>
 
-            <div class="mb-3 col-12 col-xxl-6">
 
+            <div class="mb-3 col-12 col-xxl-6">
                 <div class="col-xl-12">
                     <div class="card">
                         <div class="card-body mb-5">
-
                             <div class="wizard wizard-success mb-4">
-
                                 <table class="table table-striped">
                                     <tr>
                                         <th>日付</th>
-                                        <td class="align-middle" th:text="${report.report_date}"></td>
+                                        <td class="align-middle" th:text="${report.reportDate}"></td>
                                     </tr>
                                     <tr>
                                         <th>氏名</th>
                                         <td class="align-middle" th:text="${report.employee.name}"></td>
                                     </tr>
-                                     <tr>
+                                    <tr>
                                         <th>タイトル</th>
                                         <td class="align-middle" th:text="${report.title}"></td>
                                     </tr>
@@ -58,7 +56,13 @@
                                             th:method="get">更新</a>
                                     </div>
                                     <div class="col-auto">
-                                        <a th:href="@{/employees}" class="btn btn-primary">戻る</a>
+                                        <form name="form" th:action="@{/reports/{code}/delete(code=${code})}"
+                                            th:method="post">
+                                            <input type="submit" value="削除" class="btn btn-primary">
+                                        </form>
+                                    </div>
+                                    <div class="col-auto">
+                                        <a th:href="@{/reports}" class="btn btn-primary">戻る</a>
                                     </div>
                                 </div>
                             </div>
