@@ -71,10 +71,10 @@ public class EmployeeService {
             updateEmp.setPassword(employee.getPassword());
         }
 
-            //初期値の名前はDB値をセットする
+            //フォームから得た氏名をセットする
             updateEmp.setName(employee.getName());
 
-            //初期値の権限はDB値をセットする
+            //フォームから得た役割をセットする
             updateEmp.setRole(employee.getRole());
 
             LocalDateTime now = LocalDateTime.now();

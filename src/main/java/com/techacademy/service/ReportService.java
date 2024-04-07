@@ -39,7 +39,7 @@ public class ReportService {
 
     // 日報保存
     @Transactional
-    public Report saveReport(Report report) {
+    public ErrorKinds saveReport(Report report) {
 
         //Reportテーブルにそれぞれの値（従業員テーブルの情報、削除フラグの設定、作成日時、更新日時）をセット
         report.setEmployee(report.getEmployee());
@@ -49,7 +49,8 @@ public class ReportService {
         report.setUpdated_at(now);
 
         //reportリポジトリ―に内容を保存
-        return reportRepository.save(report);
+        reportRepository.save(report);
+        return ErrorKinds.SUCCESS;
     }
 
     // 日報更新保存

@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,11 +53,22 @@ public class ReportController {
 
     //日報新規登録処理
     @PostMapping(value = "/add")
-    public String add(@AuthenticationPrincipal UserDetail userDetail, Report report, Model model,BindingResult res) {
+    public String add(@Validated Report report, Model model,BindingResult res,@AuthenticationPrincipal UserDetail userDetail) {
         model.addAttribute("employee", userDetail.getEmployee());
         report.setEmployee(userDetail.getEmployee());
 
-        reportService.saveReport(report);
+        // 入力チェック
+        if (res.hasErrors()) {
+            return create(userDetail, report, model);
+        }
+        ErrorKinds result = reportService.saveReport(report);
+
+        if (ErrorMessage.contains(result)) {
+            model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
+            return create(userDetail, report, model);
+        }
+
+//        reportService.saveReport(report);
 
         return "redirect:/reports";
     }
@@ -71,17 +83,32 @@ public class ReportController {
 
     //日報更新画面
     @GetMapping(value = "/{code}/update")
-    public String edit(@PathVariable String code, Model model, Report report) {
+    public String edit(@PathVariable String code, Model model,@ModelAttribute Report report) {
+
+
+        if(code != null) {
         model.addAttribute("report", reportService.getReport(code));
+        }
 
         return "reports/edit";
     }
 
     //日報更新処理
     @PostMapping(value = "/{code}/update")
-    public String update(@PathVariable String code, @Validated Report report, BindingResult res, Model model) {
+    public String update(@PathVariable String code, @Validated @ModelAttribute Report report, BindingResult res, Model model) {
 
-        reportService.updateSave(report, code);
+        // 入力チェック
+        if (res.hasErrors()) {
+            return edit(null, model, report);
+        }
+
+        //サービスにあるupdateSaveのreportに登録される内容をresultに格納
+        ErrorKinds result = reportService.updateSave(report, code);
+        //エラーが含まれるならエラーメッセージと共に日報更新画面に戻る
+        if (ErrorMessage.contains(result)) {
+            model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
+            return edit(code, model, report);
+    }
         //更新ができたら一覧にリダイレクト
         return "redirect:/reports";
     }
