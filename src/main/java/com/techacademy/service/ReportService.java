@@ -28,7 +28,7 @@ public class ReportService {
         return reportRepository.findAll();
     }
 
-    // 1件を検索して返す
+    // 1件を検索して返す(employee_codeをもとに)
     public Report getReport(String employee_code) {
         // findByIdで検索
         Optional<Report> option = reportRepository.findById(employee_code);
@@ -37,9 +37,18 @@ public class ReportService {
         return report;
     }
 
+    // 1件を検索して返す(IDをもとに)
+    public Report getReportID(String ID) {
+        // findByIdで検索
+        Optional<Report> option = reportRepository.findById(ID);
+        // 取得できなかった場合はnullを返す
+        Report report = option.orElse(null);
+        return report;
+    }
+
     // 日報保存
     @Transactional
-    public ErrorKinds saveReport(Report report) {
+    public void saveReport(Report report) {
 
         //Reportテーブルにそれぞれの値（従業員テーブルの情報、削除フラグの設定、作成日時、更新日時）をセット
         report.setEmployee(report.getEmployee());
@@ -50,12 +59,11 @@ public class ReportService {
 
         //reportリポジトリ―に内容を保存
         reportRepository.save(report);
-        return ErrorKinds.SUCCESS;
     }
 
     // 日報更新保存
     @Transactional
-    public ErrorKinds updateSave(Report report, String code) {
+    public void updateSave(Report report, String code) {
         //reportリポジトリ―にあるcodeを検索して内容をupdateEmpに格納
         Report updateEmp = reportRepository.findById(code).get();
 
@@ -68,8 +76,6 @@ public class ReportService {
 
         //reportリポジトリ―に内容を保存
         reportRepository.save(updateEmp);
-
-        return ErrorKinds.SUCCESS;
 
 }
     // 日報削除
