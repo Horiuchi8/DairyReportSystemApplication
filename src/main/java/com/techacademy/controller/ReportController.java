@@ -53,71 +53,61 @@ public class ReportController {
 
     //日報新規登録処理
     @PostMapping(value = "/add")
-    public String add(@Validated Report report, Model model,BindingResult res,@AuthenticationPrincipal UserDetail userDetail) {
-        model.addAttribute("employee", userDetail.getEmployee());
-        report.setEmployee(userDetail.getEmployee());
+    public String add(@Validated Report report, BindingResult res, Model model,@AuthenticationPrincipal UserDetail userDetail) {
 
         // 入力チェック
         if (res.hasErrors()) {
             return create(userDetail, report, model);
         }
-        ErrorKinds result = reportService.saveReport(report);
 
-        if (ErrorMessage.contains(result)) {
-            model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
-            return create(userDetail, report, model);
-        }
+        model.addAttribute("employee", userDetail.getEmployee());
+        report.setEmployee(userDetail.getEmployee());
 
-//        reportService.saveReport(report);
+        reportService.saveReport(report);
 
         return "redirect:/reports";
     }
 
     // 日報詳細画面
-    @GetMapping(value = "/{code}/")
-    public String detail(@PathVariable String code, Model model) {
+    @GetMapping(value = "/{ID}/")
+    public String detail(@PathVariable String ID, Model model) {
 
-        model.addAttribute("report", reportService.getReport(code));
+        model.addAttribute("report", reportService.getReport(ID));
         return "reports/detail";
     }
 
     //日報更新画面
-    @GetMapping(value = "/{code}/update")
-    public String edit(@PathVariable String code, Model model,@ModelAttribute Report report) {
+    @GetMapping(value = "/{ID}/update")
+    public String edit(@PathVariable String ID, Model model, Report report) {
 
-
-        if(code != null) {
-        model.addAttribute("report", reportService.getReport(code));
+        //codeがnullじゃない場合は詳細画面から遷移しているので、ModelにはserviceのIDをセットする。
+        if(ID != null) {
+        model.addAttribute("report", reportService.getReport(ID));
         }
 
         return "reports/edit";
     }
 
     //日報更新処理
-    @PostMapping(value = "/{code}/update")
-    public String update(@PathVariable String code, @Validated @ModelAttribute Report report, BindingResult res, Model model) {
+    @PostMapping(value = "/{ID}/update")
+    public String update(@PathVariable String ID, @Validated Report report, BindingResult res, Model model) {
 
         // 入力チェック
         if (res.hasErrors()) {
             return edit(null, model, report);
         }
 
-        //サービスにあるupdateSaveのreportに登録される内容をresultに格納
-        ErrorKinds result = reportService.updateSave(report, code);
-        //エラーが含まれるならエラーメッセージと共に日報更新画面に戻る
-        if (ErrorMessage.contains(result)) {
-            model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
-            return edit(code, model, report);
-    }
+        reportService.updateSave(report, ID);
+
         //更新ができたら一覧にリダイレクト
         return "redirect:/reports";
     }
 
     //日報削除処理
-    @PostMapping(value = "/{code}/delete")
-    public String delete(@PathVariable String code, @AuthenticationPrincipal UserDetail userDetail, Model model) {
+    @PostMapping(value = "/{ID}/delete")
+    public String delete(@PathVariable String ID, @AuthenticationPrincipal UserDetail userDetail, Model model) {
 
-        reportService.delete(code, userDetail);
+        reportService.delete(ID, userDetail);
 
         return "redirect:/reports";
     }
