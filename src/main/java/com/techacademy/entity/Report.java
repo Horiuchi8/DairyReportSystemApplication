@@ -29,7 +29,7 @@ public class Report {
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int ID;
 
     //日付
     @NotNull
@@ -44,8 +44,9 @@ public class Report {
     private String title;
 
     //内容
-    @Column(columnDefinition="LONGTEXT", nullable = false)
+    @Column(length = 600, columnDefinition="LONGTEXT", nullable = false)
     @NotEmpty
+    @Length(max = 600)
     private String content;
 
     // 削除フラグ(論理削除を行う)
@@ -60,7 +61,7 @@ public class Report {
     @Column(nullable = false)
     private LocalDateTime updated_at;
 
-    
+
     //Employeeエンティティにある社員番号(code)をForeignKeyのemployee_codeとして使う
     @ManyToOne
     @JoinColumn(name = "employee_code", referencedColumnName = "code", nullable = false)
