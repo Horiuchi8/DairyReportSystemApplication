@@ -24,7 +24,8 @@
                                     <label class="form-label" for="reportDate">日付</label>
                                     <p class="mb-1"></p>
                                     <div class="col-md-5">
-                                        <input class="form-control" type="date" th:field="*{reportDate}">
+                                        <input class="form-control" type="date" th:field="*{reportDate}" th:errorclass="err" id="reportDate">
+                                        <span th:errors="*{reportDate}" class="text-danger"></span>
                                     </div>
                                 </div>
 
@@ -37,7 +38,7 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label" for="title">タイトル</label>
+                                    <label class="form-label" for="report.title">タイトル</label>
                                     <p class="mb-1"></p>
                                     <div class="col-md-7">
                                         <input type="text" class="form-control" th:field="*{title}" th:errorclass="err" id="title">
@@ -49,7 +50,8 @@
                                         <label class="form-label" for="content">内容</label>
                                         <p class="mb-1"></p>
                                         <div class="col-md-10">
-                                        <textarea class="form-control" rows="15" th:field="*{content}"></textarea>
+                                        <textarea class="form-control" rows="15" th:field="*{content}" th:errorclass="err" id="content"></textarea>
+                                        <span th:errors="*{content}" class="text-danger"></span>
                                         </div>
 
                                         <p class="mt-5">
@@ -63,6 +65,8 @@
                         </div>
                     </div>
                 </div>
+        </div>
+    </div>
 </body>
 
 </html>
