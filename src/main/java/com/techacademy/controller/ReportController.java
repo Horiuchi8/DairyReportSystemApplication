@@ -1,7 +1,13 @@
 package com.techacademy.controller;
 
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +23,7 @@ import com.techacademy.constants.ErrorKinds;
 import com.techacademy.constants.ErrorMessage;
 import com.techacademy.entity.Employee;
 import com.techacademy.entity.Report;
+import com.techacademy.repository.ReportRepository;
 import com.techacademy.service.ReportService;
 import com.techacademy.service.UserDetail;
 
@@ -31,14 +38,31 @@ public class ReportController {
         this.reportService = reportService;
     }
 
+
+
     //日報一覧画面
     @GetMapping()
-    public String getlist(Model model) {
+    public String getlist(@AuthenticationPrincipal UserDetail userDetail, Model model) {
 
-        model.addAttribute("listSize", reportService.findAll().size());
-        model.addAttribute("reportList", reportService.findAll());
+        //ログインした人の権限によって画面の表示制御をする
+//        model.addAttribute("Role", reportService.getReportID(userDetail.getEmployee().getCode()));
+        if ("管理者".equals(userDetail.getEmployee().getRole().getValue())){
+            model.addAttribute("reportList", reportService.findAll());
+            model.addAttribute("listSize", reportService.findAll().size());
+
+            return "reports/list";
+        }else {
+            String ID = userDetail.getEmployee().getCode();
+            List<Report> list = reportService.getReportID(ID);
+            model.addAttribute("reportList", list);
+            model.addAttribute("listSize", list.size());
+            return "reports/list";
+        }
+
+//        model.addAttribute("listSize", reportService.findAll().size());
+//        model.addAttribute("reportList", reportService.findAll());
         // list.htmlに画面遷移
-        return "reports/list";
+//        return "reports/list";
 
     }
 
@@ -63,7 +87,13 @@ public class ReportController {
         model.addAttribute("employee", userDetail.getEmployee());
         report.setEmployee(userDetail.getEmployee());
 
-        reportService.saveReport(report);
+            ErrorKinds result = reportService.saveReport(report);
+
+        if (ErrorMessage.contains(result)) {
+            model.addAttribute(ErrorMessage.getErrorName(ErrorKinds.DATECHECK_ERROR),
+                    ErrorMessage.getErrorValue(ErrorKinds.DATECHECK_ERROR));
+            return create(userDetail, report, model);
+        }
 
         return "redirect:/reports";
     }
@@ -97,7 +127,12 @@ public class ReportController {
             return edit(null, model, report);
         }
 
-        reportService.updateSave(report, ID);
+        ErrorKinds result = reportService.updateSave(report, ID);
+    if (ErrorMessage.contains(result)) {
+        model.addAttribute(ErrorMessage.getErrorName(ErrorKinds.DATECHECK_ERROR),
+                ErrorMessage.getErrorValue(ErrorKinds.DATECHECK_ERROR));
+        return edit(null, model, report);
+    }
 
         //更新ができたら一覧にリダイレクト
         return "redirect:/reports";
